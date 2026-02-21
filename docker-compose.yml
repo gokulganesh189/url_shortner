@@ -8,17 +8,16 @@ services:
     container_name: urlshortener_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: urlshortener
-      MYSQL_USER: appuser
-      MYSQL_PASSWORD: apppassword
+      MYSQL_USER: root
     ports:
-      - "3306:3306"
+      - "3309:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -47,8 +46,8 @@ services:
     environment:
       MYSQL_HOST: db
       MYSQL_PORT: 3306
-      MYSQL_USER: appuser
-      MYSQL_PASSWORD: apppassword
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
       MYSQL_DATABASE: urlshortener
       REDIS_HOST: redis
       REDIS_PORT: 6379
