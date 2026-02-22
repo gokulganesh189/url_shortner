@@ -1,5 +1,9 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+import os
 
+
+# Check APP_ENV variable — default to "development" if not set
+APP_ENV = os.getenv("APP_ENV", "development")
 
 class Settings(BaseSettings):
     # MySQL
@@ -17,7 +21,7 @@ class Settings(BaseSettings):
     base_url: str
     cache_ttl_seconds: int = 3600
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=f".env.{APP_ENV}", env_file_encoding="utf-8")
 
     @property
     def mysql_url(self) -> str:
@@ -28,3 +32,5 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+# Show which env is loaded on startup
+print(f"🌍 Running in {APP_ENV} mode — loaded .env.{APP_ENV}")

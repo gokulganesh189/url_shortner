@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: urlshortener_db_dev
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"        # expose DB port locally so you can connect with DBeaver/TablePlus
+    volumes:
+      - mysql_data_dev:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: urlshortener_redis_dev
+    restart: always
+    ports:
+      - "6379:6379"        # expose Redis port locally so you can inspect with RedisInsight
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build: .
+    container_name: urlshortener_api_dev
+    restart: always
+    ports:
+      - "8000:8000"        # port 8000 locally
+    environment:
+      APP_ENV: dev    # ← tells Python which file to load
+    env_file:
+      - .env.development
+    volumes:
+      - ./app:/app/app     # hot reload — code changes reflect instantly without rebuild
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  mysql_data_dev:          # separate volume so dev data never mixes with prod
