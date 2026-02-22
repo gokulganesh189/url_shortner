@@ -6,6 +6,8 @@ services:
     image: mysql:8.0
     container_name: urlshortener_db_dev
     restart: always
+    env_file:
+      - .env.dev 
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
