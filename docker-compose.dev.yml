@@ -44,7 +44,7 @@ services:
     environment:
       APP_ENV: dev    # ← tells Python which file to load
     env_file:
-      - .env.development
+      - .env.dev
     volumes:
       - ./app:/app/app     # hot reload — code changes reflect instantly without rebuild
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
