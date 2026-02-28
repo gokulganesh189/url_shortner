@@ -7,7 +7,7 @@ services:
     container_name: urlshortener_db_dev
     restart: always
     env_file:
-      - .env.dev 
+      - .env.dev
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -42,7 +42,7 @@ services:
     container_name: urlshortener_api_dev
     restart: always
     ports:
-      - "80:8000"        # port 8000 will be exposed as 80 the default browser port
+      - "80:8000"        # port 8000 locally exposing 80 to public
     environment:
       APP_ENV: dev    # ← tells Python which file to load
     env_file:
