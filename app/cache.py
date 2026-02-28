@@ -7,7 +7,10 @@ print(settings.redis_host, settings.redis_port)
 redis_client = redis.Redis(
     host=settings.redis_host,
     port=settings.redis_port,
+    ssl=True,
     decode_responses=True,
+    socket_connect_timeout=5,
+    socket_timeout=5,
 )
 print(redis_client)
 CACHE_PREFIX = "url:"  # Redis keys look like "url:3xK9mP"
