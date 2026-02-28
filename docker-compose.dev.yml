@@ -42,7 +42,7 @@ services:
     container_name: urlshortener_api_dev
     restart: always
     ports:
-      - "8000:8000"        # port 8000 locally
+      - "80:8000"        # port 8000 will be exposed as 80 the default browser port
     environment:
       APP_ENV: dev    # ← tells Python which file to load
     env_file:
